@@ -26,7 +26,6 @@
 
 html, body {
   height: 100%;
-  overflow: hidden;
 }
 
 body {
@@ -34,6 +33,7 @@ body {
   background: var(--dark);
   color: var(--text);
   display: flex;
+  min-height: 100vh;
 }
 
 /* ─── NOISE OVERLAY ─── */
@@ -73,13 +73,40 @@ body::before {
 @keyframes blobFloat2 { from { transform: translate(0,0) scale(1); } to { transform: translate(-50px,40px) scale(0.95); } }
 @keyframes blobFloat3 { from { transform: translate(0,0) scale(1); } to { transform: translate(30px,50px) scale(1.08); } }
 
+/* ─── TOP MOBILE BAR (hidden on desktop) ─── */
+.mobile-topbar {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 30;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: rgba(5,13,10,0.9);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(20px);
+}
+
+.mobile-topbar .logo-wrap { margin-bottom: 0; }
+
+.menu-btn {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  color: var(--neon);
+  cursor: pointer;
+}
+
 /* ─── SIDEBAR ─── */
 .sidebar {
   width: 270px;
   height: 100vh;
   flex-shrink: 0;
   position: relative;
-  z-index: 10;
+  z-index: 20;
   display: flex;
   flex-direction: column;
   padding: 36px 20px;
@@ -254,7 +281,7 @@ body::before {
   flex-direction: column;
   position: relative;
   z-index: 5;
-  overflow: hidden;
+  min-width: 0;
 }
 
 /* TOP BAR */
@@ -295,6 +322,7 @@ body::before {
   transition: all 0.3s;
   font-size: 17px;
   position: relative;
+  flex-shrink: 0;
 }
 
 .notif-btn:hover { border-color: var(--neon); box-shadow: 0 0 16px rgba(0,255,178,0.2); }
@@ -315,19 +343,14 @@ body::before {
   border: 1px solid var(--border);
   border-radius: 20px;
   padding: 6px 16px;
+  white-space: nowrap;
 }
 
 /* ─── SCROLL AREA ─── */
 .scroll-area {
   flex: 1;
-  overflow-y: auto;
   padding: 28px 40px 80px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border) transparent;
 }
-
-.scroll-area::-webkit-scrollbar { width: 4px; }
-.scroll-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
 /* ─── HERO HEADING ─── */
 .hero-heading {
@@ -387,6 +410,7 @@ body::before {
   overflow: hidden;
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   cursor: default;
+  min-width: 0;
 }
 
 .stat-card::after {
@@ -462,6 +486,7 @@ body::before {
   text-decoration: none;
   display: block;
   color: inherit;
+  min-width: 0;
 }
 
 .feat-card::before {
@@ -615,6 +640,7 @@ body::before {
   color: var(--neon);
   font-family: 'Syne', sans-serif;
   width: 55px;
+  flex-shrink: 0;
 }
 
 .sched-area {
@@ -628,6 +654,7 @@ body::before {
   padding: 2px 8px;
   border-radius: 10px;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 /* MAP PLACEHOLDER */
@@ -702,8 +729,6 @@ body::before {
   transition: stroke-dashoffset 2s ease;
 }
 
-.score-info {}
-
 .score-val {
   font-family: 'Syne', sans-serif;
   font-size: 28px;
@@ -715,17 +740,17 @@ body::before {
 
 /* ─── FOOTER ─── */
 .footer-bar {
-  position: fixed;
+  position: sticky;
   bottom: 0;
-  left: 270px;
-  right: 0;
   z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 8px;
   padding: 12px;
   font-size: 12px;
+  text-align: center;
   color: var(--muted);
   background: linear-gradient(to top, rgba(5,13,10,0.95), transparent);
 }
@@ -758,6 +783,7 @@ body::before {
   background: rgba(179,255,0,0.1);
   border: 1px solid rgba(179,255,0,0.2);
   border-radius: 20px;
+  white-space: nowrap;
 }
 
 .live-dot {
@@ -772,6 +798,153 @@ body::before {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.3; }
 }
+
+/* ═══════════════════════════════════════
+   RESPONSIVE — TABLET
+   ═══════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .main-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .feat-card.wide { grid-column: span 2; }
+  .stat-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE — MOBILE
+   Sidebar becomes an off-canvas drawer,
+   topbar appears, content stacks in
+   single column.
+   ═══════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  body {
+    flex-direction: column;
+  }
+
+  .mobile-topbar {
+    display: flex;
+  }
+
+  /* Sidebar -> slide-in drawer */
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 100vh;
+    width: 78%;
+    max-width: 300px;
+    transform: translateX(-100%);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 100;
+    box-shadow: 20px 0 60px rgba(0,0,0,0.5);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Backdrop behind drawer */
+  .sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 90;
+  }
+
+  .sidebar-backdrop.show {
+    display: block;
+  }
+
+  .main {
+    width: 100%;
+    padding-top: 64px; /* space for mobile topbar */
+  }
+
+  /* Hide desktop topbar, mobile topbar replaces it */
+  .topbar {
+    display: none;
+  }
+
+  .scroll-area {
+    padding: 20px 16px 30px;
+  }
+
+  .hero-title {
+    font-size: 30px;
+    letter-spacing: -1px;
+  }
+
+  .greeting {
+    font-size: 11px;
+  }
+
+  .hero-heading {
+    margin-bottom: 24px;
+  }
+
+  /* Stats: 2 per row */
+  .stat-strip {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    padding: 16px;
+  }
+
+  .stat-val {
+    font-size: 24px;
+  }
+
+  /* All feature cards single column */
+  .main-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .feat-card.wide {
+    grid-column: span 1;
+  }
+
+  .feat-card {
+    padding: 22px;
+  }
+
+  .feat-title {
+    font-size: 18px;
+  }
+
+  .feat-arrow {
+    bottom: 18px;
+    right: 18px;
+    width: 32px;
+    height: 32px;
+  }
+
+  .footer-bar {
+    font-size: 11px;
+    padding: 14px 12px;
+  }
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE — SMALL PHONES
+   ═══════════════════════════════════════ */
+@media (max-width: 400px) {
+  .stat-strip {
+    grid-template-columns: 1fr 1fr;
+  }
+  .hero-title {
+    font-size: 26px;
+  }
+  .date-chip {
+    display: none;
+  }
+}
 </style>
 </head>
 <body>
@@ -783,8 +956,23 @@ body::before {
   <div class="mesh-blob b3"></div>
 </div>
 
+<!-- MOBILE TOPBAR -->
+<div class="mobile-topbar">
+  <div class="logo-wrap">
+    <div class="logo-icon">🌱</div>
+    <div class="logo-text">EcoWaste</div>
+  </div>
+  <div style="display:flex; align-items:center; gap:10px;">
+    <div class="live-chip"><div class="live-dot"></div> LIVE</div>
+    <div class="menu-btn" id="menuBtn">☰</div>
+  </div>
+</div>
+
+<!-- BACKDROP FOR MOBILE DRAWER -->
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
 <!-- ───────────── SIDEBAR ───────────── -->
-<aside class="sidebar">
+<aside class="sidebar" id="sidebar">
 
   <div class="logo-wrap">
     <div class="logo-icon">🌱</div>
@@ -1000,12 +1188,12 @@ body::before {
     </div>
   </div>
 
-</main>
+  <!-- FOOTER -->
+  <div class="footer-bar">
+    🌱 <span class="brand">EcoWaste</span> — Making cities cleaner, greener & smarter 🌍 &nbsp;·&nbsp; © 2026 All Rights Reserved
+  </div>
 
-<!-- FOOTER -->
-<div class="footer-bar">
-  🌱 <span class="brand">EcoWaste</span> — Making cities cleaner, greener & smarter 🌍 &nbsp;·&nbsp; © 2026 All Rights Reserved
-</div>
+</main>
 
 <script>
   // Live date
@@ -1014,15 +1202,39 @@ body::before {
 
   // Stagger card animations
   document.querySelectorAll('.feat-card').forEach((card, i) => {
-    card.style.animationDelay = `${0.15 + i * 0.08}s`;
     card.style.opacity = '0';
     card.style.animation = `slideUp 0.7s ${0.15 + i * 0.08}s cubic-bezier(0.34, 1.56, 0.64, 1) forwards`;
   });
 
   document.querySelectorAll('.stat-card').forEach((card, i) => {
-    card.style.animationDelay = `${0.05 + i * 0.07}s`;
     card.style.opacity = '0';
     card.style.animation = `slideUp 0.7s ${0.05 + i * 0.07}s cubic-bezier(0.34, 1.56, 0.64, 1) forwards`;
+  });
+
+  // Mobile drawer toggle
+  const menuBtn = document.getElementById('menuBtn');
+  const sidebar = document.getElementById('sidebar');
+  const backdrop = document.getElementById('sidebarBackdrop');
+
+  function openDrawer() {
+    sidebar.classList.add('open');
+    backdrop.classList.add('show');
+  }
+  function closeDrawer() {
+    sidebar.classList.remove('open');
+    backdrop.classList.remove('show');
+  }
+
+  menuBtn.addEventListener('click', () => {
+    sidebar.classList.contains('open') ? closeDrawer() : openDrawer();
+  });
+  backdrop.addEventListener('click', closeDrawer);
+
+  // Close drawer when a nav link is tapped (mobile)
+  document.querySelectorAll('.nav-link, .logout-link').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 768) closeDrawer();
+    });
   });
 </script>
 
