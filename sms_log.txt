@@ -1,0 +1,89 @@
+2026-05-12 06:46:39 | Name: srikanth | Phone: 9550618218
+SMS Status: accepted
+---
+2026-05-12 06:47:12 | Name: srikanth | Phone: 9390241031
+SMS Status: accepted
+---
+2026-05-12 10:16:17 | Name: sree | Phone: 9390241031
+SMS Status: accepted
+---
+2026-05-12 10:21:28 | Name: sree | Phone: 9390241031
+CURL ERROR: Resolving timed out after 10013 milliseconds
+---
+2026-05-12 10:21:41 | Fast2SMS | Phone: 9390241031 | Response: {"status_code":999,"message":"You need to complete one transaction of 100 INR or more before using API route."}
+---
+2026-05-12 10:22:08 | Name: nani | Phone: 9390241031
+Twilio Status: accepted
+---
+2026-05-12 10:22:09 | Fast2SMS | Phone: 9390241031 | Response: {"status_code":999,"message":"You need to complete one transaction of 100 INR or more before using API route."}
+---
+2026-05-12 11:08:14 | Name: dharma | Phone: 8008444328
+SMS Status: accepted
+---
+2026-05-12 11:08:15 | Fast2SMS | Phone: 8008444328 | Response: {"return":true,"request_id":"SPCeDcsfXPWNIPF","message":["SMS sent successfully."]}
+---
+2026-05-12 11:11:34 | Name: srikanth | Phone: 9390241031
+CURL ERROR: Resolving timed out after 10013 milliseconds
+---
+2026-05-12 11:11:35 | Fast2SMS | Phone: 9390241031 | Response: {"return":true,"request_id":"SMd5RidEi9cGhwW","message":["SMS sent successfully."]}
+---
+2026-05-12 11:12:23 | Name: pandu | Phone: 9390241031
+SMS Status: accepted
+---
+2026-05-12 11:12:24 | Fast2SMS | Phone: 9390241031 | Response: {"return":true,"request_id":"SQxeBvJdi9FxZK1","message":["SMS sent successfully."]}
+---
+2026-05-12 11:17:43 | Name: srikanth | Phone: 9390241031
+SMS Status: accepted
+---
+2026-05-12 11:17:48 | Fast2SMS | Phone: 9390241031 | Response: {"return":true,"request_id":"S4uJV0HKNypBj6Y","message":["SMS sent successfully."]}
+---
+2026-05-12 11:23:34 | Name: karthik | Phone: 9390241031
+CURL ERROR: Resolving timed out after 10008 milliseconds
+---
+2026-05-12 11:23:42 | Fast2SMS v3 | Phone: 9390241031 | Response: 
+---
+2026-05-12 17:06:32 | Name: karthik | Phone: 9390241031
+SMS Status: accepted
+---
+2026-05-12 17:06:33 | Fast2SMS | Phone: 9390241031 | Response: {"return":true,"request_id":"SuHQc7p4EqYSi73","message":["SMS sent successfully."]} | Error: 
+---
+2026-05-12 17:08:00 | Name: teja | Phone: 7680892454
+SMS Status: accepted
+---
+2026-05-12 17:08:01 | Fast2SMS | Phone: 7680892454 | Response: {"return":true,"request_id":"S6rxv5JWAkR2JLy","message":["SMS sent successfully."]} | Error: 
+---
+2026-05-12 17:16:51 | Name: moksha | Phone: 9347758767
+SMS Status: accepted
+---
+2026-05-12 17:16:52 | Fast2SMS | Phone: 9347758767 | Response: {"return":true,"request_id":"Sa3RBXQoo9O239g","message":["SMS sent successfully."]} | Error: 
+---
+2026-05-12 18:46:29 | Name: akshay | Phone: 9949763396
+SMS Status: accepted
+---
+2026-05-12 18:46:30 | Fast2SMS | Phone: 9949763396 | Response: {"return":true,"request_id":"ScPGNv3z19o6vLY","message":["SMS sent successfully."]} | Error: 
+---
+2026-05-12 18:58:32 | Name: akshay | Phone: 9949763396
+SMS Status: accepted
+---
+2026-05-12 18:58:35 | Fast2SMS | Phone: 9949763396 | Response:  | Error: 
+---
+2026-05-12 18:59:44 | Name: akshay | Phone: 9949763396
+SMS Status: accepted
+---
+2026-05-12 18:59:45 | Fast2SMS | Phone: 9949763396 | Response:  | Error: 
+---
+2026-05-13 04:38:46 | Name: srikanth | Phone: 9390241031
+SMS Status: accepted
+---
+2026-05-13 04:38:49 | Fast2SMS | Phone: 9390241031 | Response: {"return":true,"request_id":"SUFeRkV1iMVt9AC","message":["SMS sent successfully."]} | Error: 
+---
+2026-06-15 05:22:29 | Name: praveen | Phone: 8885692725
+CURL ERROR: Could not resolve host: api.twilio.com
+---
+2026-06-15 05:22:29 | Fast2SMS | Phone: 8885692725 | Response:  | Error: Could not resolve host: www.fast2sms.com
+---
+2026-06-15 05:24:31 | Name: dharma | Phone: 8247859223
+SMS Status: accepted
+---
+2026-06-15 05:24:32 | Fast2SMS | Phone: 8247859223 | Response: {"return":true,"request_id":"SnTXCNUuMMnG2kt","message":["SMS sent successfully."]} | Error: 
+---

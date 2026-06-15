@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Admin Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #f5c518;
+    --gold-dim: #c9a012;
+    --gold-glow: rgba(245,197,24,0.35);
+    --bg-deep: #040608;
+    --bg-panel: rgba(10,13,18,0.92);
+    --border: rgba(245,197,24,0.18);
+    --text: #e8e0cc;
+    --text-dim: #7a7060;
+  }
+
+  body {
+    min-height: 100vh;
+    background: var(--bg-deep);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Rajdhani', sans-serif;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ── Grid background ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(245,197,24,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(245,197,24,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+  }
+
+  /* ── Radial spotlight ── */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(245,197,24,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* ── Scanline overlay ── */
+  .scanlines {
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.12) 2px,
+      rgba(0,0,0,0.12) 4px
+    );
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* ── Floating particles ── */
+  .particles { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
+  .particle {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: var(--gold);
+    border-radius: 50%;
+    opacity: 0;
+    animation: drift var(--dur, 8s) var(--delay, 0s) infinite ease-in-out;
+  }
+  @keyframes drift {
+    0%   { opacity: 0; transform: translateY(100vh) translateX(0); }
+    10%  { opacity: 0.6; }
+    90%  { opacity: 0.3; }
+    100% { opacity: 0; transform: translateY(-20px) translateX(var(--dx, 30px)); }
+  }
+
+  /* ── Card ── */
+  .card {
+    position: relative;
+    z-index: 5;
+    width: 420px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 52px 44px 44px;
+    backdrop-filter: blur(20px);
+    box-shadow:
+      0 0 0 1px rgba(245,197,24,0.06),
+      0 0 60px rgba(245,197,24,0.08),
+      0 40px 80px rgba(0,0,0,0.7);
+    animation: cardIn 0.9s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(28px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* corner brackets */
+  .card::before, .card::after,
+  .card .corner-br, .card .corner-tl2 {
+    content: '';
+    position: absolute;
+    width: 18px; height: 18px;
+    border-color: var(--gold);
+    border-style: solid;
+  }
+  .card::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+  .card::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+  .card .corner-br { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
+  .card .corner-tl2 { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
+
+  /* ── Header ── */
+  .header { text-align: center; margin-bottom: 40px; animation: fadeUp 0.8s 0.2s both; }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 1px;
+  }
+  .badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--gold);
+    animation: blink 1.4s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    color: #fff;
+    line-height: 1.1;
+  }
+  h1 span { color: var(--gold); }
+
+  .subtitle {
+    margin-top: 8px;
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  /* ── Field ── */
+  .field {
+    margin-bottom: 20px;
+    animation: fadeUp 0.8s both;
+  }
+  .field:nth-child(1) { animation-delay: 0.35s; }
+  .field:nth-child(2) { animation-delay: 0.45s; }
+
+  label {
+    display: block;
+    font-size: 10px;
+    font-family: 'Orbitron', monospace;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .input-wrap {
+    position: relative;
+  }
+
+  .input-wrap svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px; height: 16px;
+    stroke: var(--text-dim);
+    fill: none;
+    stroke-width: 1.5;
+    transition: stroke 0.3s;
+    pointer-events: none;
+  }
+
+  input {
+    width: 100%;
+    padding: 14px 14px 14px 42px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(245,197,24,0.15);
+    border-radius: 2px;
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+  }
+  input::placeholder { color: var(--text-dim); font-weight: 400; }
+  input:focus {
+    border-color: var(--gold);
+    background: rgba(245,197,24,0.04);
+    box-shadow: 0 0 0 3px rgba(245,197,24,0.1), inset 0 0 20px rgba(245,197,24,0.03);
+  }
+  input:focus + svg, .input-wrap:focus-within svg { stroke: var(--gold); }
+
+  /* ── Divider ── */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 28px 0;
+    animation: fadeUp 0.8s 0.5s both;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border));
+  }
+  .divider::after { background: linear-gradient(90deg, var(--border), transparent); }
+  .divider span {
+    font-family: 'Orbitron', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  /* ── Buttons ── */
+  .btn-login {
+    width: 100%;
+    padding: 15px;
+    background: var(--gold);
+    color: #0a0800;
+    border: none;
+    border-radius: 2px;
+    font-family: 'Orbitron', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+    animation: fadeUp 0.8s 0.55s both;
+  }
+  .btn-login::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.25) 50%, transparent 100%);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+  }
+  .btn-login:hover { background: #ffd740; box-shadow: 0 0 30px var(--gold-glow), 0 6px 20px rgba(0,0,0,0.4); transform: translateY(-1px); }
+  .btn-login:hover::before { transform: translateX(100%); }
+  .btn-login:active { transform: translateY(0); }
+
+  .btn-back {
+    width: 100%;
+    padding: 13px;
+    background: transparent;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+    animation: fadeUp 0.8s 0.65s both;
+  }
+  .btn-back:hover { color: var(--gold); border-color: rgba(245,197,24,0.4); background: rgba(245,197,24,0.04); }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: rgba(122,112,96,0.5);
+    text-transform: uppercase;
+    font-family: 'Orbitron', monospace;
+    animation: fadeUp 0.8s 0.7s both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 480px) {
+    .card { width: 92vw; padding: 40px 28px 32px; }
+    h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scanlines"></div>
+
+<!-- Particles -->
+<div class="particles" id="particles"></div>
+
+<div class="card">
+  <span class="corner-br"></span>
+  <span class="corner-tl2"></span>
+
+  <div class="header">
+    <div class="badge">Secure Access</div>
+    <h1>ADMIN <span>PORTAL</span></h1>
+    <p class="subtitle">Authorized Personnel Only</p>
+  </div>
+
+  <form action="admin.php" method="POST">
+    <div class="field">
+      <label for="email">Email Address</label>
+      <div class="input-wrap">
+        <input type="email" id="email" name="email" placeholder="admin@domain.com" required>
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="4" width="20" height="16" rx="2"/>
+          <polyline points="2,4 12,13 22,4"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="admin_id">Admin ID</label>
+      <div class="input-wrap">
+        <input type="text" id="admin_id" name="admin_id" placeholder="ADM-XXXXXXXX" required>
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="11" width="18" height="11" rx="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="divider"><span>Authenticate</span></div>
+
+    <button type="submit" class="btn-login">⚡ &nbsp;Login to Dashboard</button>
+  </form>
+
+  <button class="btn-back" onclick="window.location.href='index.html'">← Return to Home</button>
+
+  <div class="footer">256-bit encrypted &nbsp;·&nbsp; Session monitored</div>
+</div>
+
+<script>
+  // Generate floating particles
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 28; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `
+      left: ${Math.random()*100}%;
+      --dur: ${6 + Math.random()*10}s;
+      --delay: ${Math.random()*8}s;
+      --dx: ${(Math.random()-0.5)*120}px;
+      opacity: 0;
+      width: ${Math.random() > 0.7 ? 3 : 2}px;
+      height: ${Math.random() > 0.7 ? 3 : 2}px;
+    `;
+    container.appendChild(p);
+  }
+
+  // Input glow ripple on focus
+  document.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('focus', () => inp.closest('.input-wrap').classList.add('active'));
+    inp.addEventListener('blur',  () => inp.closest('.input-wrap').classList.remove('active'));
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EcoWaste — Admin Control Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #040c08;
+  --bg2: #071510;
+  --neon: #00ffb2;
+  --orange: #ff7c2a;
+  --green: #5cff8a;
+  --blue: #00d4ff;
+  --card: rgba(255,255,255,0.03);
+  --border: rgba(0,255,178,0.12);
+  --text: #d4f5e5;
+  --muted: rgba(212,245,229,0.4);
+  --sidebar-w: 290px;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+html, body { height:100%; overflow:hidden; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+}
+
+/* ── AMBIENT BLOBS ── */
+.blobs {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+}
+.blob {
+  position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0;
+  animation: blobAppear 2s forwards;
+}
+.blob1 { width:480px; height:480px; background:radial-gradient(circle, rgba(0,255,178,0.13), transparent 70%); top:-120px; left:-80px; animation-delay:0.2s; animation: blobAppear 2s 0.2s forwards, f1 12s 2.2s infinite alternate; }
+.blob2 { width:380px; height:380px; background:radial-gradient(circle, rgba(255,124,42,0.1), transparent 70%); bottom:-80px; left:30%; animation: blobAppear 2s 0.5s forwards, f2 14s 2.5s infinite alternate; }
+.blob3 { width:300px; height:300px; background:radial-gradient(circle, rgba(0,212,255,0.1), transparent 70%); top:30%; right:320px; animation: blobAppear 2s 0.8s forwards, f3 9s 2.8s infinite alternate; }
+
+@keyframes blobAppear { to { opacity:1; } }
+@keyframes f1 { from{transform:translate(0,0) scale(1)} to{transform:translate(50px,-60px) scale(1.1)} }
+@keyframes f2 { from{transform:translate(0,0) scale(1)} to{transform:translate(-40px,50px) scale(0.9)} }
+@keyframes f3 { from{transform:translate(0,0) scale(1)} to{transform:translate(30px,-40px) scale(1.05)} }
+
+/* ── GRID TEXTURE ── */
+body::before {
+  content:'';
+  position:fixed; inset:0; z-index:0;
+  background-image:
+    linear-gradient(rgba(0,255,178,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,178,0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* ── SIDEBAR (RIGHT) ── */
+.sidebar {
+  width: var(--sidebar-w);
+  height: 100vh;
+  position: fixed;
+  right: 0; top: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  padding: 32px 22px;
+  background: rgba(4,12,8,0.9);
+  border-left: 1px solid var(--border);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+}
+
+.sidebar::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0; height:2px;
+  background: linear-gradient(90deg, transparent, var(--neon), transparent);
+}
+
+/* Admin badge */
+.admin-badge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: rgba(0,255,178,0.06);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin-bottom: 32px;
+}
+
+.admin-avatar {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--neon), var(--blue));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 0 20px rgba(0,255,178,0.3);
+  animation: avatarPulse 3s infinite;
+  flex-shrink: 0;
+}
+
+@keyframes avatarPulse {
+  0%,100% { box-shadow: 0 0 20px rgba(0,255,178,0.3); }
+  50% { box-shadow: 0 0 35px rgba(0,255,178,0.6), 0 0 60px rgba(0,255,178,0.15); }
+}
+
+.admin-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px; font-weight: 700;
+  color: white;
+}
+.admin-role {
+  font-size: 11px; color: var(--neon);
+  font-weight: 500; letter-spacing: 0.5px;
+}
+
+.nav-section-label {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--muted); padding: 0 4px;
+  margin-bottom: 10px;
+}
+
+/* Sidebar nav buttons */
+.sb-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  background: var(--card);
+  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px; font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.sb-btn::before {
+  content:'';
+  position:absolute; inset:0;
+  background: linear-gradient(135deg, rgba(0,255,178,0.07), transparent);
+  opacity:0; transition:opacity 0.3s;
+}
+
+.sb-btn:hover { color: var(--text); border-color: var(--border); transform: translateX(-5px); }
+.sb-btn:hover::before { opacity:1; }
+
+.sb-btn.status-btn:hover { color: var(--neon); border-color: rgba(0,255,178,0.3); box-shadow: -4px 0 20px rgba(0,255,178,0.1); }
+.sb-btn.complaint-btn:hover { color: var(--orange); border-color: rgba(255,124,42,0.3); box-shadow: -4px 0 20px rgba(255,124,42,0.1); }
+.sb-btn.feedback-btn:hover { color: var(--green); border-color: rgba(92,255,138,0.3); box-shadow: -4px 0 20px rgba(92,255,138,0.1); }
+
+.sb-icon {
+  width: 32px; height: 32px;
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; flex-shrink: 0;
+}
+
+.status-btn .sb-icon  { background: rgba(0,255,178,0.12); }
+.complaint-btn .sb-icon { background: rgba(255,124,42,0.12); }
+.feedback-btn .sb-icon  { background: rgba(92,255,138,0.12); }
+
+.sb-meta { flex:1; }
+.sb-label { display:block; font-size:14px; font-weight:500; }
+.sb-sub   { display:block; font-size:10px; color:var(--muted); margin-top:1px; }
+
+.sb-count {
+  font-size: 11px; font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+.status-btn .sb-count  { background:rgba(0,255,178,0.15); color:var(--neon); }
+.complaint-btn .sb-count { background:rgba(255,124,42,0.15); color:var(--orange); }
+.feedback-btn .sb-count { background:rgba(92,255,138,0.15); color:var(--green); }
+
+.sb-spacer { flex:1; }
+
+.back-btn {
+  display:flex; align-items:center; gap:12px;
+  padding:12px 16px;
+  border-radius:14px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  color:var(--muted);
+  font-size:13px; font-weight:500;
+  cursor:pointer; text-decoration:none;
+  transition:all 0.3s;
+}
+.back-btn:hover { color:white; border-color:rgba(255,255,255,0.2); transform:translateX(-4px); }
+
+/* ── MAIN CONTENT ── */
+.main {
+  flex:1;
+  margin-right: var(--sidebar-w);
+  display:flex;
+  flex-direction:column;
+  position:relative; z-index:5;
+  overflow:hidden;
+}
+
+/* TOPBAR */
+.topbar {
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 28px 44px 0;
+  flex-shrink:0;
+}
+
+.breadcrumb { font-size:12px; color:var(--muted); display:flex; align-items:center; gap:8px; }
+.breadcrumb .active { color:var(--neon); font-weight:500; }
+
+.live-chip {
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:10px; font-weight:700; letter-spacing:1.5px;
+  color:var(--orange); padding:4px 12px;
+  background:rgba(255,124,42,0.1); border:1px solid rgba(255,124,42,0.25);
+  border-radius:20px;
+}
+.live-dot { width:6px; height:6px; border-radius:50%; background:var(--orange); animation:blink 1.2s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* SCROLL AREA */
+.scroll {
+  flex:1; overflow-y:auto; padding:30px 44px 80px;
+  scrollbar-width:thin; scrollbar-color:var(--border) transparent;
+}
+.scroll::-webkit-scrollbar { width:3px; }
+.scroll::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+
+/* HERO */
+.hero {
+  margin-bottom:36px;
+  animation: up 0.8s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes up { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+
+.hero-eyebrow {
+  font-size:11px; font-weight:600; letter-spacing:3px; text-transform:uppercase;
+  color:var(--orange); margin-bottom:8px;
+  display:flex; align-items:center; gap:8px;
+}
+.hero-eyebrow::before { content:''; width:20px; height:1px; background:var(--orange); }
+
+.hero-title {
+  font-family:'Syne', sans-serif;
+  font-size:46px; font-weight:800; line-height:1.02; letter-spacing:-2px;
+  margin-bottom:12px;
+}
+.hero-title .line2 {
+  background: linear-gradient(90deg, var(--neon), var(--blue), var(--green));
+  background-size:200%;
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  animation: gradShift 4s linear infinite;
+}
+@keyframes gradShift { 0%{background-position:0%} 100%{background-position:200%} }
+
+.hero-sub { font-size:14px; color:var(--muted); line-height:1.7; max-width:520px; }
+
+/* STAT ROW */
+.stat-row {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:14px;
+  margin-bottom:28px;
+  animation: up 0.8s 0.08s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+.scard {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:18px 20px;
+  position:relative; overflow:hidden;
+  transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  cursor:default;
+}
+.scard::after {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:var(--accent, var(--neon));
+  border-radius:18px 18px 0 0;
+}
+.scard:hover { transform:translateY(-5px); box-shadow:0 20px 50px rgba(0,0,0,0.4); border-color:rgba(0,255,178,0.25); }
+
+.scard-icon { font-size:20px; margin-bottom:10px; }
+.scard-val {
+  font-family:'Syne', sans-serif; font-size:28px; font-weight:800;
+  color:white; letter-spacing:-1px; line-height:1;
+}
+.scard-label { font-size:11px; color:var(--muted); margin-top:4px; }
+.scard-badge {
+  display:inline-block; margin-top:8px;
+  font-size:9px; font-weight:700; letter-spacing:0.5px;
+  padding:2px 8px; border-radius:20px;
+}
+
+/* IMAGE GRID */
+.img-section { margin-bottom:28px; animation: up 0.8s 0.15s cubic-bezier(0.34,1.56,0.64,1) both; }
+
+.section-header {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:16px;
+}
+.section-title {
+  font-family:'Syne', sans-serif; font-size:16px; font-weight:700; color:white;
+}
+.section-sub { font-size:11px; color:var(--muted); }
+
+.img-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+
+.icard {
+  border-radius:18px; overflow:hidden;
+  border:1px solid var(--border);
+  background:var(--card);
+  position:relative;
+  transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  cursor:pointer;
+}
+.icard:hover { transform:translateY(-8px) scale(1.02); border-color:rgba(0,255,178,0.3); box-shadow:0 25px 60px rgba(0,0,0,0.5), 0 0 30px rgba(0,255,178,0.08); }
+
+.icard img {
+  width:100%; height:175px; object-fit:cover;
+  transition:transform 0.5s; display:block;
+  filter:brightness(0.85) saturate(0.9);
+}
+.icard:hover img { transform:scale(1.06); filter:brightness(1) saturate(1.1); }
+
+.icard-overlay {
+  position:absolute; inset:0;
+  background:linear-gradient(to bottom, transparent 40%, rgba(4,12,8,0.85) 100%);
+}
+
+.icard-body {
+  position:absolute; bottom:0; left:0; right:0;
+  padding:16px;
+}
+.icard-tag {
+  display:inline-block; margin-bottom:6px;
+  font-size:9px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase;
+  padding:2px 8px; border-radius:20px;
+  background:rgba(0,255,178,0.2); color:var(--neon);
+  border:1px solid rgba(0,255,178,0.3);
+}
+.icard-title { font-family:'Syne', sans-serif; font-size:14px; font-weight:700; color:white; }
+
+/* ACTIVITY FEED */
+.activity-section { animation: up 0.8s 0.22s cubic-bezier(0.34,1.56,0.64,1) both; }
+
+.feed {
+  display:grid; grid-template-columns:1fr 1fr; gap:12px;
+}
+
+.feed-item {
+  display:flex; align-items:center; gap:14px;
+  padding:14px 16px;
+  background:var(--card); border:1px solid var(--border);
+  border-radius:14px;
+  transition:all 0.3s;
+}
+.feed-item:hover { border-color:rgba(0,255,178,0.25); transform:translateX(4px); }
+
+.feed-dot {
+  width:10px; height:10px; border-radius:50%; flex-shrink:0;
+}
+.feed-icon {
+  width:36px; height:36px; border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px; flex-shrink:0;
+}
+.feed-label { font-size:13px; color:var(--text); font-weight:500; }
+.feed-meta  { font-size:10px; color:var(--muted); margin-top:2px; }
+.feed-status {
+  margin-left:auto; font-size:10px; font-weight:700;
+  padding:3px 9px; border-radius:20px; flex-shrink:0;
+}
+
+/* FOOTER */
+.footer-bar {
+  position:fixed; bottom:0; left:0; right:var(--sidebar-w);
+  z-index:10;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  padding:14px;
+  font-size:12px; color:var(--muted);
+  background:linear-gradient(to top, rgba(4,12,8,0.98), transparent);
+}
+.footer-bar .brand { color:var(--neon); font-weight:700; text-shadow:0 0 10px rgba(0,255,178,0.5); }
+</style>
+</head>
+<body>
+
+<!-- AMBIENT -->
+<div class="blobs">
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+  <div class="blob blob3"></div>
+</div>
+
+<!-- ───────── MAIN ───────── -->
+<main class="main">
+
+  <div class="topbar">
+    <div class="breadcrumb">
+      <span>EcoWaste</span>
+      <span style="opacity:0.3">›</span>
+      <span class="active">Admin Panel</span>
+    </div>
+    <div class="live-chip"><div class="live-dot"></div>SYSTEM LIVE</div>
+  </div>
+
+  <div class="scroll">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-eyebrow">Admin Control Center</div>
+      <h1 class="hero-title">
+        Manage &amp; Monitor<br>
+        <span class="line2">All Operations</span>
+      </h1>
+      <p class="hero-sub">
+        Oversee every aspect of EcoWaste — monitor pickup requests, resolve complaints in real time, and analyze user feedback to drive a cleaner, greener city.
+      </p>
+    </div>
+
+    <!-- STATS -->
+    <div class="stat-row">
+      <div class="scard" style="--accent:var(--neon)">
+        <div class="scard-icon">🚛</div>
+        <div class="scard-val">148</div>
+        <div class="scard-label">Total Pickups Today</div>
+        <div class="scard-badge" style="background:rgba(0,255,178,0.12);color:var(--neon)">↑ 12% vs yesterday</div>
+      </div>
+      <div class="scard" style="--accent:var(--orange)">
+        <div class="scard-icon">⚠️</div>
+        <div class="scard-val">7</div>
+        <div class="scard-label">Open Complaints</div>
+        <div class="scard-badge" style="background:rgba(255,124,42,0.12);color:var(--orange)">3 urgent</div>
+      </div>
+      <div class="scard" style="--accent:var(--green)">
+        <div class="scard-icon">💬</div>
+        <div class="scard-val">93<span style="font-size:16px;color:var(--muted)">%</span></div>
+        <div class="scard-label">Positive Feedback</div>
+        <div class="scard-badge" style="background:rgba(92,255,138,0.12);color:var(--green)">↑ Excellent</div>
+      </div>
+      <div class="scard" style="--accent:var(--blue)">
+        <div class="scard-icon">♻️</div>
+        <div class="scard-val">5.2<span style="font-size:16px;color:var(--muted)">t</span></div>
+        <div class="scard-label">Waste Processed</div>
+        <div class="scard-badge" style="background:rgba(0,212,255,0.12);color:var(--blue)">Today's total</div>
+      </div>
+    </div>
+
+    <!-- IMAGE GRID -->
+    <div class="img-section">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Operations Overview</div>
+          <div class="section-sub">Live monitoring from field stations</div>
+        </div>
+      </div>
+      <div class="img-grid">
+
+        <div class="icard">
+          <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&q=80" alt="Waste Monitoring">
+          <div class="icard-overlay"></div>
+          <div class="icard-body">
+            <div class="icard-tag">🟢 Active</div>
+            <div class="icard-title">Smart Waste Monitoring</div>
+          </div>
+        </div>
+
+        <div class="icard">
+          <img src="https://images.unsplash.com/photo-1509395176047-4a66953fd231?w=600&q=80" alt="Pickup System">
+          <div class="icard-overlay"></div>
+          <div class="icard-body">
+            <div class="icard-tag" style="background:rgba(255,124,42,0.2);color:var(--orange);border-color:rgba(255,124,42,0.3)">🚛 Fleet</div>
+            <div class="icard-title">Efficient Pickup System</div>
+          </div>
+        </div>
+
+        <div class="icard">
+          <img src="https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?w=600&q=80" alt="Eco Solutions">
+          <div class="icard-overlay"></div>
+          <div class="icard-body">
+            <div class="icard-tag" style="background:rgba(92,255,138,0.2);color:var(--green);border-color:rgba(92,255,138,0.3)">🌍 Eco</div>
+            <div class="icard-title">Eco‑Friendly Solutions</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ACTIVITY FEED -->
+    <div class="activity-section">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Recent Activity</div>
+          <div class="section-sub">Last 2 hours across all zones</div>
+        </div>
+      </div>
+      <div class="feed">
+
+        <div class="feed-item">
+          <div class="feed-icon" style="background:rgba(0,255,178,0.1)">🚛</div>
+          <div>
+            <div class="feed-label">Zone A — Pickup Completed</div>
+            <div class="feed-meta">08:42 AM · Driver: Ravi Kumar</div>
+          </div>
+          <div class="feed-status" style="background:rgba(0,255,178,0.12);color:var(--neon)">Done</div>
+        </div>
+
+        <div class="feed-item">
+          <div class="feed-icon" style="background:rgba(255,124,42,0.1)">⚠️</div>
+          <div>
+            <div class="feed-label">New Complaint — Zone C</div>
+            <div class="feed-meta">09:05 AM · Missed pickup reported</div>
+          </div>
+          <div class="feed-status" style="background:rgba(255,124,42,0.12);color:var(--orange)">Urgent</div>
+        </div>
+
+        <div class="feed-item">
+          <div class="feed-icon" style="background:rgba(92,255,138,0.1)">💬</div>
+          <div>
+            <div class="feed-label">Feedback — 5 Star Rating</div>
+            <div class="feed-meta">09:18 AM · Resident, Zone B</div>
+          </div>
+          <div class="feed-status" style="background:rgba(92,255,138,0.12);color:var(--green)">★ 5.0</div>
+        </div>
+
+        <div class="feed-item">
+          <div class="feed-icon" style="background:rgba(0,212,255,0.1)">♻️</div>
+          <div>
+            <div class="feed-label">Recyclables Processed — 1.2t</div>
+            <div class="feed-meta">09:30 AM · Facility: Central Plant</div>
+          </div>
+          <div class="feed-status" style="background:rgba(0,212,255,0.12);color:var(--blue)">Logged</div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- ───────── RIGHT SIDEBAR ───────── -->
+<aside class="sidebar">
+
+  <div class="admin-badge">
+    <div class="admin-avatar">👨‍💼</div>
+    <div>
+      <div class="admin-name">Administrator</div>
+      <div class="admin-role">● Super Admin Access</div>
+    </div>
+  </div>
+
+  <div class="nav-section-label">Management</div>
+
+  <a href="admin_dashboard.php" class="sb-btn status-btn">
+    <div class="sb-icon">📊</div>
+    <div class="sb-meta">
+      <span class="sb-label">View Status</span>
+      <span class="sb-sub">Live system overview</span>
+    </div>
+    <div class="sb-count">148</div>
+  </a>
+
+  <a href="admin_complaint.php" class="sb-btn complaint-btn">
+    <div class="sb-icon">⚠️</div>
+    <div class="sb-meta">
+      <span class="sb-label">Complaints</span>
+      <span class="sb-sub">Pending resolutions</span>
+    </div>
+    <div class="sb-count" style="background:rgba(255,124,42,0.15);color:var(--orange)">7</div>
+  </a>
+
+  <a href="admin_feedback.php" class="sb-btn feedback-btn">
+    <div class="sb-icon">💬</div>
+    <div class="sb-meta">
+      <span class="sb-label">Feedback</span>
+      <span class="sb-sub">User reviews</span>
+    </div>
+    <div class="sb-count" style="background:rgba(92,255,138,0.15);color:var(--green)">93%</div>
+  </a>
+
+  <!-- Mini quick-stat -->
+  <div style="margin:16px 0; padding:14px 16px; background:rgba(0,255,178,0.04); border:1px solid var(--border); border-radius:14px;">
+    <div style="font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Today's Summary</div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+      <span style="font-size:12px;color:var(--muted)">Pickups</span>
+      <span style="font-size:12px;font-weight:600;color:var(--neon)">148 / 160</span>
+    </div>
+    <div style="height:4px;background:rgba(255,255,255,0.06);border-radius:4px;margin-bottom:10px;overflow:hidden;">
+      <div style="height:100%;width:92%;background:linear-gradient(90deg,var(--neon),var(--blue));border-radius:4px;"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;">
+      <span style="font-size:12px;color:var(--muted)">Complaints Resolved</span>
+      <span style="font-size:12px;font-weight:600;color:var(--orange)">14 / 21</span>
+    </div>
+    <div style="height:4px;background:rgba(255,255,255,0.06);border-radius:4px;margin-top:8px;overflow:hidden;">
+      <div style="height:100%;width:66%;background:linear-gradient(90deg,var(--orange),#ffb347);border-radius:4px;"></div>
+    </div>
+  </div>
+
+  <div class="sb-spacer"></div>
+
+  <a href="index.html" class="back-btn">
+    ← &nbsp; Back to Main Site
+  </a>
+
+</aside>
+
+<!-- FOOTER -->
+<div class="footer-bar">
+  🌱 <span class="brand">EcoWaste</span> Admin Panel · © 2026 All Rights Reserved
+</div>
+
+<script>
+  // Stagger animations
+  document.querySelectorAll('.icard').forEach((c,i) => {
+    c.style.opacity = '0';
+    c.style.animation = `up 0.7s ${0.2 + i*0.1}s cubic-bezier(0.34,1.56,0.64,1) forwards`;
+  });
+  document.querySelectorAll('.feed-item').forEach((c,i) => {
+    c.style.opacity = '0';
+    c.style.animation = `up 0.6s ${0.3 + i*0.07}s cubic-bezier(0.34,1.56,0.64,1) forwards`;
+  });
+</script>
+
+</body>
+</html>

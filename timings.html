@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Waste Collection Timings</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins', sans-serif;
+}
+
+/* 🌌 Background */
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+    color:white;
+    background:linear-gradient(270deg,#0f2027,#203a43,#2c5364);
+    background-size:600% 600%;
+    animation:bgMove 10s ease infinite;
+}
+
+@keyframes bgMove{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+}
+
+/* ✨ Glow circles */
+.circle{
+    position:absolute;
+    border-radius:50%;
+    filter:blur(60px);
+    opacity:0.4;
+    animation:float 6s infinite alternate;
+}
+.circle1{width:200px;height:200px;background:#00ffcc;top:10%;left:10%;}
+.circle2{width:150px;height:150px;background:#00ccff;bottom:10%;right:10%;}
+
+@keyframes float{
+    from{transform:translateY(0);}
+    to{transform:translateY(-40px);}
+}
+
+/* 💎 Container */
+.container{
+    text-align:center;
+    background:rgba(255,255,255,0.1);
+    padding:50px;
+    border-radius:20px;
+    backdrop-filter:blur(15px);
+    box-shadow:0 10px 40px rgba(0,0,0,0.6);
+    animation:fadeIn 1.2s ease;
+}
+
+@keyframes fadeIn{
+    from{opacity:0; transform:scale(0.8);}
+    to{opacity:1; transform:scale(1);}
+}
+
+/* TITLE */
+h1{
+    color:#00ffcc;
+    margin-bottom:20px;
+    text-shadow:0 0 10px #00ffcc;
+}
+
+/* TIME BOX */
+.time-box{
+    font-size:24px;
+    margin:20px 0;
+    padding:20px;
+    border-radius:15px;
+    background:rgba(255,255,255,0.15);
+    box-shadow:0 0 20px rgba(0,255,204,0.5);
+    animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+    0%{transform:scale(1);}
+    50%{transform:scale(1.05);}
+    100%{transform:scale(1);}
+}
+
+/* TEXT */
+p{
+    margin-top:10px;
+    opacity:0.9;
+}
+
+/* BUTTON */
+button{
+    margin-top:25px;
+    padding:12px 25px;
+    border:none;
+    border-radius:25px;
+    background:#00ffcc;
+    color:black;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:scale(1.05);
+    box-shadow:0 0 20px #00ffcc;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Glow effects -->
+<div class="circle circle1"></div>
+<div class="circle circle2"></div>
+
+<div class="container">
+
+    <h1>⏰ Waste Collection Timings</h1>
+
+    <div class="time-box">
+        5:00 AM — 8:00 PM
+    </div>
+
+    <p>
+        Waste collection services are available throughout the day.  
+        Please ensure your waste is ready for pickup within these hours.
+    </p>
+
+    <button onclick="window.location.href='dashboard.html'">
+        Back to Dashboard
+    </button>
+
+</div>
+
+</body>
+</html>

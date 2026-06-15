@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feedback</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cyan:   #00ffcc;
+    --teal:   #00d4aa;
+    --blue:   #00aaff;
+    --glow:   rgba(0,255,204,0.3);
+    --bg:     #040d0b;
+    --panel:  #091512;
+    --border: rgba(0,255,204,0.13);
+    --text:   #dffff8;
+    --muted:  #2a6b5e;
+  }
+
+  body {
+    min-height: 100vh;
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Exo 2', sans-serif;
+    padding: 24px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ── Grid bg ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,255,204,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,204,0.03) 1px, transparent 1px);
+    background-size: 36px 36px;
+    pointer-events: none;
+  }
+
+  /* ── Spotlight ── */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse 60% 55% at 50% 50%, rgba(0,255,204,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* ── Blobs ── */
+  .blob {
+    position: fixed; border-radius: 50%;
+    filter: blur(85px); pointer-events: none; z-index: 0;
+  }
+  .b1 { width:360px;height:360px; background:rgba(0,255,204,0.09); top:-90px; left:-80px;  animation:pulse 10s ease-in-out infinite alternate; }
+  .b2 { width:260px;height:260px; background:rgba(0,170,255,0.07); bottom:-70px; right:-60px; animation:pulse 13s 3s ease-in-out infinite alternate-reverse; }
+  @keyframes pulse { from{transform:scale(1)} to{transform:scale(1.2)} }
+
+  /* ── Particles ── */
+  .pts { position:fixed; inset:0; pointer-events:none; z-index:1; }
+  .pt  {
+    position:absolute; border-radius:50%;
+    background:var(--cyan); opacity:0;
+    animation:rise var(--d,10s) var(--dl,0s) infinite ease-in-out;
+  }
+  @keyframes rise {
+    0%   { opacity:0; transform:translateY(100vh); }
+    10%  { opacity:.5; }
+    90%  { opacity:.12; }
+    100% { opacity:0; transform:translateY(-30px) translateX(var(--dx,0px)); }
+  }
+
+  /* ── Scanlines ── */
+  .scan {
+    position:fixed; inset:0; pointer-events:none; z-index:1;
+    background:repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,255,204,0.012) 3px, rgba(0,255,204,0.012) 4px);
+  }
+
+  /* ── Card ── */
+  .card {
+    position:relative; z-index:5;
+    width:100%; max-width:460px;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:24px;
+    padding:50px 42px 42px;
+    box-shadow:
+      0 0 0 1px rgba(0,255,204,0.04),
+      0 4px 8px rgba(0,0,0,0.5),
+      0 30px 90px rgba(0,0,0,0.8),
+      inset 0 1px 0 rgba(255,255,255,0.04);
+    animation: cardIn .85s cubic-bezier(.16,1,.3,1) both;
+  }
+  @keyframes cardIn {
+    from { opacity:0; transform:translateY(40px) scale(.97); }
+    to   { opacity:1; transform:translateY(0) scale(1); }
+  }
+
+  /* HUD corners */
+  .card::before,.card::after,.c-br,.c-bl {
+    content:''; position:absolute;
+    width:22px; height:22px;
+    border-color:var(--cyan); border-style:solid;
+  }
+  .card::before { top:-1px; left:-1px;  border-width:2px 0 0 2px; }
+  .card::after  { top:-1px; right:-1px; border-width:2px 2px 0 0; }
+  .c-br { bottom:-1px; right:-1px; border-width:0 2px 2px 0; }
+  .c-bl { bottom:-1px; left:-1px;  border-width:0 0 2px 2px; }
+
+  /* top glow bar */
+  .top-bar {
+    position:absolute; top:0; left:50px; right:50px; height:2px;
+    background:linear-gradient(90deg,transparent,var(--cyan),var(--blue),transparent);
+    border-radius:0 0 4px 4px;
+  }
+
+  /* ── Header ── */
+  .header { margin-bottom:30px; animation:fadeUp .7s .1s both; }
+
+  .hud-tag {
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'Orbitron',monospace;
+    font-size:9px; font-weight:700; letter-spacing:.25em; text-transform:uppercase;
+    color:var(--cyan); border:1px solid var(--border);
+    padding:5px 14px; border-radius:2px; margin-bottom:16px;
+  }
+  .hud-dot {
+    width:7px; height:7px; border-radius:50%;
+    background:var(--cyan); box-shadow:0 0 8px var(--cyan);
+    animation:blink 1.5s ease-in-out infinite;
+  }
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}
+
+  h1 {
+    font-family:'Orbitron',monospace;
+    font-size:22px; font-weight:900;
+    color:var(--text); line-height:1.2; letter-spacing:.01em;
+  }
+  h1 em {
+    font-style:normal;
+    background:linear-gradient(100deg,var(--cyan),var(--blue));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+  .sub { margin-top:7px; font-size:12.5px; color:var(--muted); line-height:1.55; }
+
+  /* ── Fields ── */
+  .field { margin-bottom:15px; animation:fadeUp .7s both; }
+  .field:nth-child(1){animation-delay:.26s}
+  .field:nth-child(2){animation-delay:.33s}
+  .field:nth-child(3){animation-delay:.40s}
+  .field:nth-child(4){animation-delay:.47s}
+
+  label {
+    display:flex; align-items:center; gap:6px;
+    font-size:10px; font-weight:600;
+    font-family:'Orbitron',monospace;
+    letter-spacing:.1em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:8px;
+  }
+
+  /* ✅ ORIGINAL INPUTS — only styled */
+  input[type="text"], select, textarea {
+    width:100%;
+    background:rgba(0,255,204,0.03);
+    border:1px solid rgba(255,255,255,0.06);
+    border-radius:10px;
+    color:var(--text);
+    font-family:'Exo 2',sans-serif;
+    font-size:14px; outline:none; appearance:none;
+    transition:border-color .25s, box-shadow .25s, background .25s;
+  }
+  input[type="text"] { padding:13px 16px; }
+  input::placeholder { color:rgba(42,107,94,0.9); }
+
+  input[type="text"]:focus, select:focus, textarea:focus {
+    border-color:rgba(0,255,204,0.5);
+    background:rgba(0,255,204,0.04);
+    box-shadow:0 0 0 3px rgba(0,255,204,0.1), 0 0 18px rgba(0,255,204,0.06);
+  }
+
+  /* select wrapper */
+  .sel-wrap { position:relative; }
+  .sel-wrap::after {
+    content:'▾'; position:absolute;
+    right:14px; top:50%; transform:translateY(-50%);
+    color:var(--muted); pointer-events:none; font-size:13px;
+  }
+  select { padding:13px 36px 13px 16px; cursor:pointer; }
+  select option { background:#091512; }
+
+  /* textarea */
+  textarea {
+    padding:13px 16px;
+    resize:vertical; min-height:100px; line-height:1.6;
+    display:none; /* ✅ ORIGINAL — hidden by default */
+  }
+  textarea::placeholder { color:rgba(42,107,94,0.9); }
+
+  /* ── Divider ── */
+  .divider {
+    height:1px;
+    background:linear-gradient(90deg,transparent,var(--border),transparent);
+    margin:22px 0;
+  }
+
+  /* ── Buttons ── */
+  /* ✅ ORIGINAL SUBMIT — posts to feedback.php */
+  .submit-btn {
+    width:100%; padding:15px;
+    background:linear-gradient(135deg,var(--cyan),var(--blue));
+    color:#021a18; border:none; border-radius:12px;
+    font-family:'Orbitron',monospace;
+    font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+    cursor:pointer; position:relative; overflow:hidden;
+    transition:transform .2s, box-shadow .2s;
+    animation:fadeUp .7s .56s both;
+  }
+  .submit-btn::before {
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.22),transparent);
+    transform:translateX(-100%); transition:transform .55s ease;
+  }
+  .submit-btn:hover { transform:translateY(-2px); box-shadow:0 10px 36px rgba(0,255,204,0.4); }
+  .submit-btn:hover::before { transform:translateX(100%); }
+  .submit-btn:active { transform:translateY(0); }
+
+  /* ✅ ORIGINAL BACK BTN */
+  .back-btn {
+    width:100%; padding:13px;
+    background:transparent;
+    border:1px solid rgba(255,255,255,0.07);
+    border-radius:12px; color:var(--muted);
+    font-family:'Orbitron',monospace;
+    font-size:10px; font-weight:700; letter-spacing:.08em;
+    cursor:pointer; margin-top:10px;
+    transition:color .2s, border-color .2s, background .2s;
+    animation:fadeUp .7s .63s both;
+  }
+  .back-btn:hover { color:var(--text); border-color:rgba(0,255,204,0.3); background:rgba(0,255,204,0.04); }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(16px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  @media(max-width:480px){
+    .card { padding:38px 22px 28px; }
+    h1    { font-size:18px; }
+  }
+</style>
+
+<!-- ✅ ORIGINAL SCRIPT — logic completely untouched -->
+<script>
+function toggleDrawback(){
+    let value = document.getElementById("drawback").value;
+    let box = document.getElementById("drawbackText");
+
+    if(value === "Yes"){
+        box.style.display = "block";
+    } else {
+        box.style.display = "none";
+    }
+}
+</script>
+
+</head>
+<body>
+
+<div class="blob b1"></div>
+<div class="blob b2"></div>
+<div class="scan"></div>
+<div class="pts" id="pts"></div>
+
+<div class="card">
+  <span class="c-br"></span>
+  <span class="c-bl"></span>
+  <div class="top-bar"></div>
+
+  <div class="header">
+    <div class="hud-tag"><span class="hud-dot"></span> Response Portal</div>
+    <h1>Share Your <em>Feedback</em></h1>
+    <p class="sub">Help us improve by sharing your honest experience.</p>
+  </div>
+
+  <!-- ✅ ORIGINAL FORM — action & method untouched -->
+  <form action="feedback.php" method="POST">
+
+    <div class="field">
+      <label>👤 Your Name</label>
+      <!-- ✅ ORIGINAL -->
+      <input type="text" name="name" placeholder="Enter Name" required>
+    </div>
+
+    <div class="field">
+      <label>⭐ Rating</label>
+      <!-- ✅ ORIGINAL SELECT with all original options & values -->
+      <div class="sel-wrap">
+        <select name="rating" required>
+          <option value="">Select Rating</option>
+          <option value="5">⭐⭐⭐⭐⭐</option>
+          <option value="4">⭐⭐⭐⭐</option>
+          <option value="3">⭐⭐⭐</option>
+          <option value="2">⭐⭐</option>
+          <option value="1">⭐</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>💭 Any Drawback?</label>
+      <!-- ✅ ORIGINAL SELECT — id="drawback" onchange="toggleDrawback()" untouched -->
+      <div class="sel-wrap">
+        <select name="drawback_option" id="drawback" onchange="toggleDrawback()">
+          <option value="">Any Drawback?</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <!-- ✅ ORIGINAL TEXTAREA — id="drawbackText" hidden by default, shown by toggleDrawback() -->
+      <textarea id="drawbackText" name="drawback_text" placeholder="Describe the issue..."></textarea>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ✅ ORIGINAL SUBMIT -->
+    <button type="submit" class="submit-btn">✨ &nbsp;Submit Feedback</button>
+
+  </form>
+
+  <!-- ✅ ORIGINAL BACK BUTTON — onclick untouched -->
+  <button class="back-btn" onclick="window.location.href='dashboard.html'">
+    ← Go Back
+  </button>
+
+</div>
+
+<script>
+  // Decorative particles only — no logic
+  const c = document.getElementById('pts');
+  for (let i = 0; i < 22; i++) {
+    const p = document.createElement('div');
+    p.className = 'pt';
+    const sz = Math.random() > .7 ? 3 : 2;
+    p.style.cssText = `
+      left:${Math.random()*100}%;
+      width:${sz}px; height:${sz}px;
+      --d:${8+Math.random()*10}s;
+      --dl:${Math.random()*9}s;
+      --dx:${(Math.random()-.5)*70}px;
+    `;
+    c.appendChild(p);
+  }
+</script>
+
+</body>
+</html>
