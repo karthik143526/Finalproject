@@ -1,4 +1,6 @@
 <?php
+// Test change
+
 $conn = new mysqli("localhost", "root", "", "eco");
 
 if ($conn->connect_error) {
@@ -9,6 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $email = trim($_POST['email']);
     $password = $_POST['password'];
+    
 
     // ✅ Validation
     if (empty($email) || empty($password)) {
