@@ -1,10 +1,10 @@
 <?php
 $conn = new mysqli("localhost","root","","eco");
 
-$name = $_POST['name'];
-$rating = $_POST['rating'];
-$drawback_option = $_POST['drawback_option'];
-$drawback_text = $_POST['drawback_text'];
+$name = isset($_POST['name']) ? $_POST['name'] : '';
+$rating = isset($_POST['rating']) ? $_POST['rating'] : '';
+$drawback_option = isset($_POST['drawback_option']) ? $_POST['drawback_option'] : '';
+$drawback_text = isset($_POST['drawback_text']) ? $_POST['drawback_text'] : '';
 
 $sql = "INSERT INTO feedback (name, rating, drawback_option, drawback_text)
 VALUES ('$name','$rating','$drawback_option','$drawback_text')";

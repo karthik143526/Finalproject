@@ -11,12 +11,15 @@ $success = false;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $name = trim($_POST['name']);
-    $email = trim($_POST['email']);
-    $password = $_POST['password'];
-    $confirm_password = $_POST['confirm_password'];
+    $name = isset($_POST['name']) ? trim($_POST['name']) : '';
+    $email = isset($_POST['email']) ? trim($_POST['email']) : '';
+    $password = isset($_POST['password']) ? $_POST['password'] : '';
+    $confirm_password = isset($_POST['confirm_password']) ? $_POST['confirm_password'] : '';
 
-    if ($password != $confirm_password) {
+    if (empty($password) || empty($confirm_password)) {
+        $message = "❌ Password fields cannot be empty";
+        $subtext = "Please fill in all fields.";
+    } elseif ($password != $confirm_password) {
         $message = "❌ Passwords do not match";
         $subtext = "Please check your password and try again.";
     } elseif (

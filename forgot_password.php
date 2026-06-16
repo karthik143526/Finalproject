@@ -1,9 +1,17 @@
 <?php
 $conn = new mysqli("localhost", "root", "", "eco");
 
-$email = $_POST['email'];
+$email = isset($_POST['email']) ? trim($_POST['email']) : '';
 
-$result = $conn->query("SELECT * FROM users WHERE email='$email'");
+if (!$email) {
+    echo "Error: Email is required.";
+    exit();
+}
+
+$stmt = $conn->prepare("SELECT * FROM users WHERE email=?");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
 

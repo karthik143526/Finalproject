@@ -1,6 +1,10 @@
 <?php
 $conn = new mysqli("localhost","root","","eco");
-$id = $_GET['id'];
-$conn->query("UPDATE requests SET status='Assigned' WHERE id=$id");
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+    $stmt = $conn->prepare("UPDATE requests SET status='Assigned' WHERE id=?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+}
 header("Location: admin_dashboard.php");
 ?>

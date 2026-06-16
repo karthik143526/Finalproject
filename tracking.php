@@ -1,7 +1,7 @@
 <?php
 $conn = new mysqli("localhost","root","","eco");
 
-$id = $_POST['tracking_id'];
+$id = isset($_POST['tracking_id']) ? $_POST['tracking_id'] : '';
 
 $result = $conn->query("SELECT * FROM requests WHERE tracking_id='$id'");
 

@@ -87,3 +87,13 @@ SMS Status: accepted
 ---
 2026-06-15 05:24:32 | Fast2SMS | Phone: 8247859223 | Response: {"return":true,"request_id":"SnTXCNUuMMnG2kt","message":["SMS sent successfully."]} | Error: 
 ---
+2026-06-16 06:14:34 | Name: Test | Phone: 1234567890
+SMS Status: 401
+---
+2026-06-16 06:14:35 | Fast2SMS | Phone: 1234567890 | Response: {"return":false,"status_code":411,"message":"Invalid Numbers"} | Error: 
+---
+2026-06-16 06:30:14 | Name: dharma | Phone: 8247859223
+SMS Status: 401
+---
+2026-06-16 06:30:16 | Fast2SMS | Phone: 8247859223 | Response: {"return":true,"request_id":"Su5Vzru1JZQ2sQ5","message":["SMS sent successfully."]} | Error: 
+---
