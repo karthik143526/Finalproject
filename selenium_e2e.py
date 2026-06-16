@@ -14,6 +14,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
 BASE_URL = "http://localhost/finalproject"
+BASE_URL = "https://karthiksites.byethost11.com"
 
 ADMIN_EMAIL = "karthikvenkat062@gmail.com"
 ADMIN_ID = "192372092"
