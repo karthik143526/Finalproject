@@ -1,4 +1,4 @@
-name: PHP Check
+name: PHP + Selenium Test
 
 on:
   push:
@@ -6,12 +6,14 @@ on:
       - main
 
 jobs:
-  php-lint:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
+      # PHP Check
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -19,3 +21,24 @@ jobs:
 
       - name: Check PHP Syntax
         run: find . -name "*.php" -exec php -l {} \;
+
+      # Python Setup
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python Packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install selenium openpyxl webdriver-manager
+
+      - name: Run Selenium Script
+        run: |
+          python selenium_e2e.py
+
+      - name: Upload Excel Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: selenium-report
+          path: selenium_test_cases.xlsx
