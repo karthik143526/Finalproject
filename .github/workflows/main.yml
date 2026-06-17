@@ -42,3 +42,15 @@ jobs:
         with:
           name: selenium-report
           path: selenium_test_cases.xlsx
+                - name: Upload Excel Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: selenium-report
+          path: selenium_test_cases.xlsx
+
+      - name: Run Trivy Vulnerability Scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'table'
