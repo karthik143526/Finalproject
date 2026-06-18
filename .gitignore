@@ -1,0 +1,19 @@
+# OS
+Thumbs.db
+.DS_Store
+
+# Editor
+.idea/
+.vscode/
+
+# Node / vendor
+node_modules/
+vendor/
+
+# Environment / secrets
+.env
+*.log
+sms_log.txt
+
+# Database dumps (keep schema-only dumps if needed)
+*.sql
