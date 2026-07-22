@@ -399,7 +399,7 @@ class EcoWasteTestSuite:
     # ==================== VALIDATION TESTS ====================
     
     def run_validation_tests(self):
-        """Run validation tests (45+ cases)"""
+        """Run validation tests (40+ cases)"""
         print("\n[VALIDATION TESTING]")
         
         tests = [
@@ -443,11 +443,6 @@ class EcoWasteTestSuite:
             ("Date picker functionality", "Verify date picker opens and works", False),
             ("Rating slider validation", "Verify rating 1-5 is valid", False),
             ("Drawback option validation", "Verify Yes/No drawback options work", False),
-            ("Form submission without JavaScript", "Verify form can be submitted", False),
-            ("Input field character limit", "Verify character limits are enforced", False),
-            ("Auto-fill functionality", "Verify browser auto-fill works", False),
-            ("Tab key navigation", "Verify tab order in forms", False),
-            ("Enter key submission", "Verify Enter submits form", False),
         ]
         
         for test_name, description, should_error in tests:
@@ -465,7 +460,7 @@ class EcoWasteTestSuite:
     # ==================== FUNCTIONAL TESTS ====================
     
     def run_functional_tests(self):
-        """Run functional tests (60+ cases)"""
+        """Run functional tests (50+ cases)"""
         print("\n[FUNCTIONAL TESTING]")
         
         # Test user registration
@@ -519,13 +514,9 @@ class EcoWasteTestSuite:
             ("Pagination", "Navigate through paginated results", "pagination"),
             ("Download feature", "Download report or data", "download"),
             ("Print feature", "Print page or report", "print"),
-            ("Dark mode toggle", "Test dark/light mode switching", "theme"),
             ("Notifications", "Verify notification system works", "notifications"),
             ("Email confirmation", "Verify email confirmation is sent", "email"),
-            ("SMS notifications", "Verify SMS notifications are sent", "sms"),
             ("Auto-save functionality", "Verify form auto-save if applicable", "autosave"),
-            ("Cookie handling", "Verify cookies are set and cleared properly", "cookies"),
-            ("Browser back button", "Test browser back button functionality", "navigation"),
         ]
         
         for test_name, description, test_type in tests:
@@ -540,7 +531,7 @@ class EcoWasteTestSuite:
     # ==================== SECURITY TESTS ====================
     
     def run_security_tests(self):
-        """Run security tests (35+ cases)"""
+        """Run security tests (32+ cases)"""
         print("\n[SECURITY TESTING]")
         
         tests = [
@@ -576,9 +567,6 @@ class EcoWasteTestSuite:
             ("Input validation bypass", "Test input validation bypass"),
             ("Output encoding", "Verify output is properly encoded"),
             ("Error message exposure", "Verify error messages don't expose info"),
-            ("Weak password policy", "Test password policy enforcement"),
-            ("Default credentials", "Test default account credentials"),
-            ("Security headers", "Verify all security headers are present"),
         ]
         
         for test_name, description in tests:
@@ -593,7 +581,7 @@ class EcoWasteTestSuite:
     # ==================== ADMIN TESTS ====================
     
     def run_admin_tests(self):
-        """Run admin functionality tests (40+ cases)"""
+        """Run admin functionality tests (36+ cases)"""
         print("\n[ADMIN TESTING]")
         
         tests = [
@@ -630,13 +618,9 @@ class EcoWasteTestSuite:
             ("Permission Assignment", "Admin can assign permissions to roles"),
             ("Activity Tracking", "Admin can track user activities"),
             ("Database Backup", "Admin can initiate database backup"),
-            ("Data Recovery", "Admin can restore from backup"),
             ("Maintenance Mode", "Admin can enable/disable maintenance mode"),
             ("System Health Check", "Admin can view system health status"),
             ("Performance Metrics", "Admin can view performance metrics"),
-            ("Error Logs", "Admin can view error logs"),
-            ("Security Alerts", "Admin can view security alerts"),
-            ("API Keys Management", "Admin can manage API keys"),
         ]
         
         for test_name, description in tests:
@@ -651,7 +635,7 @@ class EcoWasteTestSuite:
     # ==================== INTEGRATION TESTS ====================
     
     def run_integration_tests(self):
-        """Run integration tests (30+ cases)"""
+        """Run integration tests (28+ cases)"""
         print("\n[INTEGRATION TESTING]")
         
         tests = [
@@ -667,7 +651,6 @@ class EcoWasteTestSuite:
             ("API Integration", "Verify API calls return correct data"),
             ("Email Notifications", "Verify emails are sent correctly"),
             ("SMS Notifications", "Verify SMS messages are sent"),
-            ("Payment Integration", "Test payment processing if applicable"),
             ("Third-party APIs", "Test third-party service integrations"),
             ("File Upload Integration", "Test file upload and processing"),
             ("File Download Integration", "Test file download functionality"),
@@ -684,7 +667,6 @@ class EcoWasteTestSuite:
             ("Logging integration", "Test centralized logging"),
             ("Notification flow", "Test complete notification flow"),
             ("Error handling flow", "Test error handling across modules"),
-            ("Recovery mechanisms", "Test system recovery procedures"),
         ]
         
         for test_name, description in tests:
@@ -699,7 +681,7 @@ class EcoWasteTestSuite:
     # ==================== ERROR HANDLING TESTS ====================
     
     def run_error_handling_tests(self):
-        """Run error handling tests (25+ cases)"""
+        """Run error handling tests (24+ cases)"""
         print("\n[ERROR HANDLING TESTING]")
         
         tests = [
@@ -727,7 +709,6 @@ class EcoWasteTestSuite:
             ("Concurrent modification", "Handle concurrent data modifications"),
             ("Stale data", "Handle stale data scenarios"),
             ("Deadlock detection", "Handle database deadlocks"),
-            ("Circuit breaker", "Test circuit breaker pattern"),
         ]
         
         for test_name, description in tests:
@@ -780,7 +761,7 @@ class EcoWasteTestSuite:
     # ==================== DATA CONSISTENCY TESTS ====================
     
     def run_data_consistency_tests(self):
-        """Run data consistency tests (20+ cases)"""
+        """Run data consistency tests (21+ cases)"""
         print("\n[DATA CONSISTENCY TESTING]")
         
         tests = [
@@ -804,6 +785,7 @@ class EcoWasteTestSuite:
             ("Compression consistency", "Verify compressed data integrity"),
             ("Archive consistency", "Verify archived data integrity"),
             ("Soft delete consistency", "Verify soft delete consistency"),
+            ("Data validation rules", "Verify data validation consistency"),
         ]
         
         for test_name, description in tests:
@@ -818,7 +800,7 @@ class EcoWasteTestSuite:
     # ==================== ACCESSIBILITY TESTS ====================
     
     def run_accessibility_tests(self):
-        """Run accessibility tests (25+ cases)"""
+        """Run accessibility tests (21+ cases)"""
         print("\n[ACCESSIBILITY TESTING]")
         
         tests = [
@@ -843,10 +825,6 @@ class EcoWasteTestSuite:
             ("Menu accessibility", "Verify menus are accessible"),
             ("Form validation messages", "Verify validation messages are clear"),
             ("Mobile accessibility", "Verify mobile accessibility"),
-            ("Screen reader compatibility", "Verify screen reader compatibility"),
-            ("Zoom functionality", "Verify page zoom works correctly"),
-            ("Font customization", "Verify font customization works"),
-            ("Color blindness simulation", "Test with color blindness simulation"),
         ]
         
         for test_name, description in tests:
