@@ -17,9 +17,9 @@ if($conn->query($sql)){
     // ============================================
     // TWILIO SMS - Admin gets notification
     // ============================================
-    $account_sid   = 'YOUR_TWILIO_SID';
-$auth_token    = 'YOUR_TWILIO_AUTH_TOKEN';
-$messaging_sid = 'YOUR_MESSAGING_SID';
+    $account_sid   = 'AC6348be9a1161451bb0cf0c0705cc3ecc';
+$auth_token    = '377020b870e3e9259e64e720232a4335';
+$messaging_sid = 'MG90c892a8baefaeb0215d46af01c14f2d';
    
 
     $admin_msg = "New Pickup Request!\n"
