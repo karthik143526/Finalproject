@@ -1,534 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login — EcoWaste</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EcoWaste Login</title>
 <style>
-  :root {
-    --lime: #c8f53a;
-    --lime-dim: #a8d020;
-    --dark: #0d110a;
-    --dark2: #111508;
-    --dark3: #1a2010;
-    --mid: #2a3520;
-    --text: #d4e8b8;
-    --muted: #607048;
-    --white: #eef5e0;
-  }
-
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    min-height: 100vh;
-    display: flex;
-    background: var(--dark);
-    font-family: 'DM Sans', sans-serif;
-    color: var(--text);
-    overflow: hidden;
-  }
-
-  /* ── CURSOR ── */
-  .cursor { width: 8px; height: 8px; background: var(--lime); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; mix-blend-mode: difference; transition: transform 0.1s; }
-  .cursor-ring { width: 32px; height: 32px; border: 1px solid rgba(200,245,58,0.5); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; transition: transform 0.18s ease, width 0.2s, height 0.2s; }
-
-  /* ── LEFT PANEL ── */
-  .panel-left {
-    width: 52%;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding: 60px;
-  }
-
-  /* animated grid background */
-  .panel-left::before {
-    content: '';
-    position: absolute; inset: 0;
-    background:
-      linear-gradient(rgba(200,245,58,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(200,245,58,0.04) 1px, transparent 1px);
-    background-size: 48px 48px;
-    animation: gridShift 20s linear infinite;
-  }
-  @keyframes gridShift {
-    from { background-position: 0 0; }
-    to   { background-position: 48px 48px; }
-  }
-
-  /* deep dark gradient overlay */
-  .panel-left::after {
-    content: '';
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse at 30% 70%, rgba(200,245,58,0.09) 0%, transparent 60%),
-                linear-gradient(to top, var(--dark) 0%, transparent 60%);
-    pointer-events: none;
-  }
-
-  /* eco orb */
-  .eco-orb {
-    position: absolute;
-    top: -120px; right: -120px;
-    width: 480px; height: 480px;
-    background: radial-gradient(circle, rgba(200,245,58,0.12) 0%, transparent 65%);
-    border-radius: 50%;
-    animation: orbFloat 8s ease-in-out infinite alternate;
-  }
-  @keyframes orbFloat {
-    from { transform: translate(0,0) scale(1); }
-    to   { transform: translate(-30px, 40px) scale(1.06); }
-  }
-
-  /* floating stat chips */
-  .stat-chip {
-    position: absolute;
-    background: rgba(13,17,10,0.85);
-    border: 1px solid var(--mid);
-    border-radius: 12px;
-    padding: 14px 20px;
-    backdrop-filter: blur(12px);
-    display: flex; align-items: center; gap: 12px;
-    animation: chipFloat 6s ease-in-out infinite alternate;
-    z-index: 2;
-  }
-  .chip1 { top: 18%; left: 8%; animation-delay: 0s; }
-  .chip2 { top: 38%; right: 6%; animation-delay: -2s; }
-  .chip3 { top: 58%; left: 12%; animation-delay: -4s; }
-  @keyframes chipFloat {
-    from { transform: translateY(0px); }
-    to   { transform: translateY(-10px); }
-  }
-  .chip-icon { font-size: 22px; }
-  .chip-num {
-    font-family: 'Syne', sans-serif;
-    font-size: 18px; font-weight: 800;
-    color: var(--lime); line-height: 1;
-  }
-  .chip-label { font-size: 11px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
-
-  /* panel bottom content */
-  .left-content { position: relative; z-index: 3; }
-  .brand-back {
-    display: inline-flex; align-items: center; gap: 8px;
-    text-decoration: none;
-    font-size: 13px; color: var(--muted);
-    margin-bottom: 48px;
-    transition: color 0.2s;
-    letter-spacing: 0.02em;
-  }
-  .brand-back:hover { color: var(--lime); }
-  .brand-back svg { transition: transform 0.2s; }
-  .brand-back:hover svg { transform: translateX(-3px); }
-
-  .left-tagline {
-    font-size: 11px; font-weight: 600;
-    letter-spacing: 0.16em; text-transform: uppercase;
-    color: var(--lime); margin-bottom: 16px;
-  }
-  .left-heading {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(36px, 4vw, 56px);
-    font-weight: 800;
-    line-height: 1.05;
-    letter-spacing: -2px;
-    color: var(--white);
-    margin-bottom: 20px;
-  }
-  .left-heading em {
-    font-style: normal;
-    color: var(--lime);
-  }
-  .left-desc {
-    font-size: 15px; line-height: 1.7;
-    color: var(--muted); max-width: 360px;
-  }
-
-  /* bottom bar */
-  .left-bar {
-    margin-top: 40px;
-    padding-top: 28px;
-    border-top: 1px solid var(--mid);
-    display: flex; gap: 32px;
-  }
-  .bar-item { }
-  .bar-val {
-    font-family: 'Syne', sans-serif;
-    font-size: 24px; font-weight: 800;
-    color: var(--lime);
-  }
-  .bar-key { font-size: 12px; color: var(--muted); letter-spacing: 0.05em; }
-
-  /* ── RIGHT PANEL ── */
-  .panel-right {
-    width: 48%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 60px 64px;
-    background: var(--dark2);
-    border-left: 1px solid var(--mid);
-    position: relative;
-  }
-
-  /* top-right corner deco */
-  .corner-deco {
-    position: absolute;
-    top: 0; right: 0;
-    width: 200px; height: 200px;
-    background: radial-gradient(circle at top right, rgba(200,245,58,0.07) 0%, transparent 65%);
-    pointer-events: none;
-  }
-
-  .form-wrap {
-    width: 100%; max-width: 380px;
-  }
-
-  /* nav logo row */
-  .form-top {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 56px;
-  }
-  .logo-mark {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800; font-size: 18px;
-    color: var(--white);
-    display: flex; align-items: center; gap: 7px;
-  }
-  .logo-dot {
-    width: 8px; height: 8px;
-    background: var(--lime); border-radius: 50%;
-    animation: pulse 2s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    0%,100% { box-shadow: 0 0 0 0 rgba(200,245,58,0.4); }
-    50%      { box-shadow: 0 0 0 7px rgba(200,245,58,0); }
-  }
-  .form-step { font-size: 12px; color: var(--muted); letter-spacing: 0.08em; }
-
-  /* headings */
-  .form-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 32px; font-weight: 800;
-    letter-spacing: -1px;
-    color: var(--white);
-    margin-bottom: 6px;
-    animation: fadeUp 0.6s ease both;
-  }
-  .form-subtitle {
-    font-size: 14px; color: var(--muted);
-    margin-bottom: 40px;
-    animation: fadeUp 0.6s 0.08s ease both;
-  }
-
-  /* fields */
-  .field {
-    margin-bottom: 20px;
-    animation: fadeUp 0.6s ease both;
-  }
-  .field:nth-child(1) { animation-delay: 0.12s; }
-  .field:nth-child(2) { animation-delay: 0.18s; }
-
-  .field label {
-    display: block;
-    font-size: 12px; font-weight: 500;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 8px;
-  }
-  .input-wrap {
-    position: relative;
-  }
-  .input-wrap svg {
-    position: absolute; left: 16px; top: 50%;
-    transform: translateY(-50%);
-    color: var(--muted);
-    pointer-events: none;
-    transition: color 0.25s;
-  }
-  .input-wrap:focus-within svg { color: var(--lime); }
-
-  input[type="email"],
-  input[type="password"] {
-    width: 100%;
-    padding: 14px 16px 14px 46px;
-    background: var(--dark3);
-    border: 1px solid var(--mid);
-    border-radius: 10px;
-    color: var(--white);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
-  }
-  input::placeholder { color: var(--muted); }
-  input:focus {
-    border-color: var(--lime);
-    background: rgba(200,245,58,0.04);
-    box-shadow: 0 0 0 3px rgba(200,245,58,0.1);
-  }
-
-  /* password toggle */
-  .eye-btn {
-    position: absolute; right: 14px; top: 50%;
-    transform: translateY(-50%);
-    background: none; border: none;
-    color: var(--muted); cursor: pointer;
-    padding: 4px; transition: color 0.2s;
-  }
-  .eye-btn:hover { color: var(--lime); }
-
-  /* forgot */
-  .forgot-row {
-    display: flex; justify-content: flex-end;
-    margin-top: -10px; margin-bottom: 28px;
-  }
-  
-  .forgot-row a {
-    font-size: 12px; color: var(--muted);
-    text-decoration: none; transition: color 0.2s;
-  }
-  .forgot-row a:hover { color: var(--lime); }
-
-  /* submit */
-  .btn-submit {
-    width: 100%;
-    padding: 15px;
-    background: var(--lime);
-    border: none; border-radius: 10px;
-    font-family: 'Syne', sans-serif;
-    font-weight: 700; font-size: 15px;
-    color: var(--dark);
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center; gap: 10px;
-    transition: all 0.3s;
-    animation: fadeUp 0.6s 0.25s ease both;
-    letter-spacing: 0.01em;
-  }
-  .btn-submit:hover {
-    background: var(--white);
-    transform: translateY(-2px);
-    box-shadow: 0 16px 40px rgba(200,245,58,0.25);
-  }
-  .btn-submit svg { transition: transform 0.3s; }
-  .btn-submit:hover svg { transform: translateX(4px); }
-
-  /* divider */
-  .divider {
-    display: flex; align-items: center; gap: 12px;
-    margin: 24px 0;
-    animation: fadeUp 0.6s 0.3s ease both;
-  }
-  .divider-line { flex: 1; height: 1px; background: var(--mid); }
-  .divider span { font-size: 12px; color: var(--muted); letter-spacing: 0.05em; }
-
-  /* back btn */
-  .btn-back {
-    width: 100%;
-    padding: 14px;
-    background: transparent;
-    border: 1px solid var(--mid);
-    border-radius: 10px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px; color: var(--muted);
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    transition: all 0.25s;
-    animation: fadeUp 0.6s 0.35s ease both;
-  }
-  .btn-back:hover {
-    border-color: var(--text);
-    color: var(--text);
-    background: rgba(255,255,255,0.03);
-  }
-
-  /* register link */
-  .register-link {
-    text-align: center;
-    margin-top: 28px;
-    font-size: 13px; color: var(--muted);
-    animation: fadeUp 0.6s 0.4s ease both;
-  }
-  .register-link a { color: var(--lime); text-decoration: none; font-weight: 500; }
-  .register-link a:hover { text-decoration: underline; }
-
-  /* ── ANIMATIONS ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(18px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 860px) {
-    body { overflow: auto; flex-direction: column; }
-    .panel-left { display: none; }
-    .panel-right { width: 100%; min-height: 100vh; padding: 40px 28px; }
-  }
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial,sans-serif;background:#0d110a;overflow:hidden;color:#fff}
+body{display:flex;height:100vh}
+.left,.right{flex:1;position:relative}
+.left{display:flex;align-items:flex-end;padding:60px;background:
+linear-gradient(rgba(0,0,0,.4),rgba(0,0,0,.7)),
+linear-gradient(135deg,#10160c,#1d2914)}
+.grid{position:absolute;inset:0;background:
+linear-gradient(rgba(200,245,58,.05) 1px,transparent 1px),
+linear-gradient(90deg,rgba(200,245,58,.05) 1px,transparent 1px);
+background-size:40px 40px;animation:grid 12s linear infinite}
+@keyframes grid{to{background-position:40px 40px}}
+.orb{position:absolute;width:350px;height:350px;border-radius:50%;
+background:radial-gradient(circle,#c8f53a33,transparent 70%);
+top:-80px;right:-80px;animation:float 6s ease-in-out infinite alternate}
+@keyframes float{to{transform:translate(-30px,30px) scale(1.1)}}
+.card{position:absolute;background:#161d13dd;padding:12px 18px;border-radius:10px;
+border:1px solid #3c4d2e;animation:updown 4s ease-in-out infinite}
+.card:nth-child(3){top:20%;left:10%}
+.card:nth-child(4){top:40%;right:8%;animation-delay:1s}
+.card:nth-child(5){top:62%;left:18%;animation-delay:2s}
+@keyframes updown{50%{transform:translateY(-10px)}}
+.content{position:relative;z-index:2}
+h1{font-size:52px;color:#fff} h1 span{color:#c8f53a}
+p{margin-top:15px;color:#cfcfcf;max-width:400px;line-height:1.6}
+.right{display:flex;justify-content:center;align-items:center;background:#151b11}
+.box{width:360px;background:#1b2416;padding:35px;border-radius:15px;
+box-shadow:0 0 25px #0006;animation:fade .8s}
+@keyframes fade{from{opacity:0;transform:translateY(20px)}to{opacity:1}}
+.box h2{text-align:center;color:#c8f53a;margin-bottom:8px}
+.box p{text-align:center;margin-bottom:20px;color:#aaa}
+label{display:block;margin:10px 0 6px}
+.wrap{position:relative}
+input{width:100%;padding:12px 42px 12px 12px;border:1px solid #45553a;
+background:#222b1b;color:#fff;border-radius:8px}
+input:focus{outline:none;border-color:#c8f53a}
+.eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);
+cursor:pointer;font-size:18px}
+button{width:100%;padding:12px;margin-top:20px;border:none;border-radius:8px;
+background:#c8f53a;font-weight:bold;cursor:pointer}
+button:hover{background:#e7ff8a}
+.links{display:flex;justify-content:space-between;margin-top:15px}
+.links a{color:#c8f53a;text-decoration:none}
+.cursor,.ring{position:fixed;border-radius:50%;pointer-events:none;z-index:999}
+.cursor{width:8px;height:8px;background:#c8f53a}
+.ring{width:30px;height:30px;border:1px solid #c8f53a88}
+@media(max-width:800px){.left{display:none}.right{flex:1}}
 </style>
 </head>
 <body>
-
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursorRing"></div>
-
-<!-- ── LEFT PANEL ── -->
-<div class="panel-left">
-  <div class="eco-orb"></div>
-
-  <!-- floating stat chips -->
-  <div class="stat-chip chip1">
-    <div class="chip-icon">♻️</div>
-    <div>
-      <div class="chip-num">85%</div>
-      <div class="chip-label">Recycling Rate</div>
-    </div>
-  </div>
-  <div class="stat-chip chip2">
-    <div class="chip-icon">🚛</div>
-    <div>
-      <div class="chip-num">40%</div>
-      <div class="chip-label">Fuel Saved</div>
-    </div>
-  </div>
-  <div class="stat-chip chip3">
-    <div class="chip-icon">🌍</div>
-    <div>
-      <div class="chip-num">120+</div>
-      <div class="chip-label">Cities Active</div>
-    </div>
-  </div>
-
-  <div class="left-content">
-    <a href="index.html" class="brand-back">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-        <path d="M11 7H3M6 4L3 7l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      Back to EcoWaste
-    </a>
-
-    <div class="left-tagline">Sustainable Urban Systems</div>
-    <h1 class="left-heading">Track.<br>Reduce.<br><em>Sustain.</em></h1>
-    <p class="left-desc">
-      Manage your waste pickups, monitor collection schedules, and contribute to a measurably cleaner city — all from your dashboard.
-    </p>
-
-    <div class="left-bar">
-      <div class="bar-item">
-        <div class="bar-val">2.4M</div>
-        <div class="bar-key">Tons Diverted</div>
-      </div>
-      <div class="bar-item">
-        <div class="bar-val">98%</div>
-        <div class="bar-key">Pickup Accuracy</div>
-      </div>
-      <div class="bar-item">
-        <div class="bar-val">3.2M</div>
-        <div class="bar-key">Active Users</div>
-      </div>
-    </div>
-  </div>
+<div class="cursor" id="c"></div><div class="ring" id="r"></div>
+<div class="left">
+<div class="grid"></div><div class="orb"></div>
+<div class="card">♻️ Recycling 85%</div>
+<div class="card">🚛 Fuel Saved 40%</div>
+<div class="card">🌍 120+ Cities</div>
+<div class="content">
+<h1>Track.<br>Reduce.<br><span>Sustain.</span></h1>
+<p>Manage your waste pickups and keep your city clean with EcoWaste.</p>
+</div></div>
+<div class="right"><div class="box">
+<h2>EcoWaste</h2><p>Sign in to continue</p>
+<form action="login.php" method="POST">
+<label>Email</label>
+<div class="wrap"><input type="email" name="email" required></div>
+<label>Password</label>
+<div class="wrap">
+<input type="password" id="password" name="password" required>
+<span class="eye" id="eye" onclick="togglePassword()">👁️</span>
 </div>
-
-<!-- ── RIGHT PANEL ── -->
-<div class="panel-right">
-  <div class="corner-deco"></div>
-
-  <div class="form-wrap">
-
-    <div class="form-top">
-      <div class="logo-mark">
-        <span class="logo-dot"></span> EcoWaste
-      </div>
-      <div class="form-step">Step 1 of 1</div>
-    </div>
-
-    <div class="form-title">Welcome back.</div>
-    <div class="form-subtitle">Sign in to your account to continue.</div>
-
-    <form action="login.php" method="POST">
-      <div class="field">
-        <label>Email address</label>
-        <div class="input-wrap">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M2 4h12v9H2V4zm0 0l6 5 6-5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <input type="email" name="email" placeholder="you@example.com" required>
-        </div>
-      </div>
-
-      <div class="field">
-        <label>Password</label>
-        <div class="input-wrap">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
-            <path d="M5 7V5a3 3 0 016 0v2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-          </svg>
-          <input type="password" name="password" id="pwdField" placeholder="Enter your password" required>
-          <button type="button" class="eye-btn" onclick="togglePwd()" title="Show/hide password">
-            <svg id="eyeIcon" width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/>
-              <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <div class="forgot-row">
-        <a href="forgot_password.html">Forgot password?</a>
-      </div>
-
-      <button type="submit" class="btn-submit">
-        Sign In
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-    </form>
-
-    <div class="divider">
-      <div class="divider-line"></div>
-      <span>or</span>
-      <div class="divider-line"></div>
-    </div>
-
-    <button class="btn-back" onclick="window.location.href='index.html'">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-        <path d="M11 7H3M6 4L3 7l3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      Return to Homepage
-    </button>
-
-    <div class="register-link">
-      Don't have an account? <a href="register.html">Create one →</a>
-    </div>
-
-  </div>
+<button type="submit">Login</button>
+<div class="links">
+<a href="forgot_password.html">Forgot Password?</a>
+<a href="register.html">Register</a>
 </div>
-
+</form>
+</div></div>
 <script>
-  // Custom cursor
-  const cur = document.getElementById('cursor');
-  const ring = document.getElementById('cursorRing');
-  let mx=0,my=0,rx=0,ry=0;
-  document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
-  (function anim(){
-    rx += (mx-rx)*0.15; ry += (my-ry)*0.15;
-    cur.style.transform = `translate(${mx-4}px,${my-4}px)`;
-    ring.style.transform = `translate(${rx-16}px,${ry-16}px)`;
-    requestAnimationFrame(anim);
-  })();
-  document.querySelectorAll('a,button,input').forEach(el=>{
-    el.addEventListener('mouseenter',()=>{ ring.style.width='48px'; ring.style.height='48px'; });
-    el.addEventListener('mouseleave',()=>{ ring.style.width='32px'; ring.style.height='32px'; });
-  });
-
-  // Password toggle
-  function togglePwd(){
-    const f = document.getElementById('pwdField');
-    f.type = f.type === 'password' ? 'text' : 'password';
-  }
+function togglePassword(){
+let p=document.getElementById('password'),e=document.getElementById('eye');
+if(p.type==='password'){p.type='text';e.textContent='🙈';}
+else{p.type='password';e.textContent='👁️';}
+}
+let c=document.getElementById('c'),r=document.getElementById('r'),mx=0,my=0,rx=0,ry=0;
+document.onmousemove=e=>{mx=e.clientX;my=e.clientY}
+(function f(){rx+=(mx-rx)*.15;ry+=(my-ry)*.15;
+c.style.transform=`translate(${mx-4}px,${my-4}px)`;
+r.style.transform=`translate(${rx-15}px,${ry-15}px)`;
+requestAnimationFrame(f)})();
 </script>
-</body>
-</html>
+</body></html>
