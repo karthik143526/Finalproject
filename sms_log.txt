@@ -97,3 +97,9 @@ SMS Status: 401
 ---
 2026-06-16 06:30:16 | Fast2SMS | Phone: 8247859223 | Response: {"return":true,"request_id":"Su5Vzru1JZQ2sQ5","message":["SMS sent successfully."]} | Error: 
 ---
+2026-07-22 10:40:42 | Name: gokul | Phone: 8247859223
+SMS Status: 401
+---
+2026-07-22 10:40:43 | Fast2SMS | Phone: 8247859223 | Response: {"return":false,"status_code":416,"message":"You don't have sufficient wallet balance"} | Error: 
+---
+2026-07-24 07:52:15 | API Request Created | ID: 27 | Name: nandha | Phone: 9912250188
